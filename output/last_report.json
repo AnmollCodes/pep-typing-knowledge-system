@@ -1,0 +1,109 @@
+{
+  "input": "Should Python allow marking a TypedDict field as read-only so a type checker can prevent mutation?",
+  "matched_concepts": [
+    "typed_dict"
+  ],
+  "precedent_peps": [
+    {
+      "pep": "PEP-589",
+      "title": "TypedDict: Type Hints for Dictionaries with a Fixed Set of Keys",
+      "status": "Final",
+      "python_version": "3.8",
+      "concept_overlap_score": 1,
+      "shared_concepts": [
+        "typed_dict"
+      ]
+    },
+    {
+      "pep": "PEP-655",
+      "title": "Marking individual TypedDict items as required or potentially-missing",
+      "status": "Final",
+      "python_version": "3.11",
+      "concept_overlap_score": 1,
+      "shared_concepts": [
+        "typed_dict"
+      ]
+    },
+    {
+      "pep": "PEP-742",
+      "title": "Narrowing types with TypeIs",
+      "status": "Final",
+      "python_version": "3.13",
+      "concept_overlap_score": 1,
+      "shared_concepts": [
+        "typed_dict"
+      ]
+    },
+    {
+      "pep": "PEP-647",
+      "title": "User-Defined Type Guards",
+      "status": "Final",
+      "python_version": "3.10",
+      "concept_overlap_score": 1,
+      "shared_concepts": [
+        "typed_dict"
+      ]
+    },
+    {
+      "pep": "PEP-702",
+      "title": "Marking deprecations using the type system",
+      "status": "Final",
+      "python_version": "3.13",
+      "concept_overlap_score": 1,
+      "shared_concepts": [
+        "typed_dict"
+      ]
+    }
+  ],
+  "arguments_you_will_likely_face": [
+    {
+      "concept": "typed_dict",
+      "from_pep": "PEP-589",
+      "section": "Backwards Compatibility",
+      "point": "To retain backwards compatibility, type checkers should not infer a TypedDict type unless it is sufficiently clear that this is desired by the programmer. When unsure, an ordinary dictionary type should be inferred. Otherwise existing code that type checks without errors may start generating errors once TypedDict support is added to the type checker, since TypedDict types are more restrictive than dictionary types. In particular, they aren't subtypes of dictionary types."
+    },
+    {
+      "concept": "typed_dict",
+      "from_pep": "PEP-589",
+      "section": "Rejected Alternatives",
+      "point": "TypedDict isn't extensible, and it addresses only a specific use case. TypedDict objects are regular dictionaries at runtime, and TypedDict cannot be used with other dictionary-like or mapping-like classes, including subclasses of ``dict``. There is no way to add methods to TypedDict types. The motivation here is simplicity."
+    },
+    {
+      "concept": "typed_dict",
+      "from_pep": "PEP-589",
+      "section": "Rejected Alternatives",
+      "point": "TypedDict type definitions could plausibly used to perform runtime type checking of dictionaries. For example, they could be used to validate that a JSON object conforms to the schema specified by a TypedDict type. This PEP doesn't include such functionality, since the focus of this proposal is static type checking only, and other existing types do not support this, as discussed in `Class-based syntax`_. Such functionality can be provided by a third-party library using the ``typing_inspect`` [#typing_inspect]_ third-party module, for example."
+    },
+    {
+      "concept": "typed_dict",
+      "from_pep": "PEP-589",
+      "section": "Rejected Alternatives",
+      "point": "TypedDict types can't be used in ``isinstance()`` or ``issubclass()`` checks. The reasoning is similar to why runtime type checks aren't supported in general with many type hints."
+    },
+    {
+      "concept": "typed_dict",
+      "from_pep": "PEP-589",
+      "section": "Rejected Alternatives",
+      "point": "TypedDict doesn't support providing a *default value type* for keys that are not explicitly defined. This would allow arbitrary keys to be used with a TypedDict object, and only explicitly enumerated keys would receive special treatment compared to a normal, uniform dictionary type."
+    },
+    {
+      "concept": "typed_dict",
+      "from_pep": "PEP-589",
+      "section": "Rejected Alternatives",
+      "point": "TypedDict can't be used for specifying the type of a ``**kwargs`` argument. This would allow restricting the allowed keyword arguments and their types. According to :pep:`484`, using a TypedDict type as the type of ``**kwargs`` means that the TypedDict is valid as the *value* of arbitrary keyword arguments, but it doesn't restrict which keyword arguments should be allowed. The syntax ``**kwargs: Expand[T]`` has been proposed for this [#expand]_."
+    },
+    {
+      "concept": "typed_dict",
+      "from_pep": "PEP-655",
+      "section": "Rejected Ideas",
+      "point": "class MyThing(TypedDict): opt1?: str # may not exist, but if exists, value is string opt2: Optional[str] # always exists, but may have None value"
+    },
+    {
+      "concept": "typed_dict",
+      "from_pep": "PEP-655",
+      "section": "Rejected Ideas",
+      "point": "This notation would require Python grammar changes and it is not believed that marking TypedDict items as required or potentially-missing would meet the high bar required to make such grammar changes."
+    }
+  ],
+  "recommendation": "Very strong precedent overlap with PEP-589 ('TypedDict: Type Hints for Dictionaries with a Fixed Set of Keys', status: Final). Read that PEP's Rationale/Rejected-Ideas section before drafting a proposal, since 1 of 1 matched concept(s) were already litigated there."
+}
