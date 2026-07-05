@@ -1,0 +1,58 @@
+{
+  "concept": "type_narrowing",
+  "num_peps_in_timeline": 4,
+  "timeline": [
+    {
+      "pep": "PEP-544",
+      "title": "Protocols: Structural subtyping (static duck typing)",
+      "created": "05-Mar-2017",
+      "status": "Final",
+      "python_version": "3.8",
+      "supersedes": [],
+      "superseded_by": [],
+      "argument_count": 0,
+      "sample_arguments": []
+    },
+    {
+      "pep": "PEP-586",
+      "title": "Literal Types",
+      "created": "14-Mar-2019",
+      "status": "Final",
+      "python_version": "3.8",
+      "supersedes": [],
+      "superseded_by": [],
+      "argument_count": 0,
+      "sample_arguments": []
+    },
+    {
+      "pep": "PEP-647",
+      "title": "User-Defined Type Guards",
+      "created": "07-Oct-2020",
+      "status": "Final",
+      "python_version": "3.10",
+      "supersedes": [],
+      "superseded_by": [],
+      "argument_count": 9,
+      "sample_arguments": [
+        "Notably, code which uses annotations in a manner incompatible with the stdlib typing library should simply not import TypeGuard.",
+        "Strict type narrowing enforcement (requiring that the type specified in the TypeGuard type argument is a narrower form of the type specified for the first parameter) was considered"
+      ]
+    },
+    {
+      "pep": "PEP-742",
+      "title": "Narrowing types with TypeIs",
+      "created": "07-Feb-2024",
+      "status": "Final",
+      "python_version": "3.13",
+      "supersedes": [
+        "PEP-724"
+      ],
+      "superseded_by": [],
+      "argument_count": 8,
+      "sample_arguments": [
+        "The problems with the current behavior of :py:data:`typing.TypeGuard` compel us to improve the type system to allow a different type narrowing behavior. :pep:`724` proposed to chan",
+        "We acknowledge that this leads to an unfortunate situation where there are two constructs with a similar purpose and similar semantics. We believe that users are more likely to wan"
+      ]
+    }
+  ]
+}

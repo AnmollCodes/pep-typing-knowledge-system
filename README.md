@@ -94,6 +94,7 @@ pep-knowledge/
 ├── src/
 │   ├── build_knowledge.py         parses data/raw into knowledge_state.json
 │   ├── reason.py                  CLI, takes a new input and returns a report
+│   ├── timeline.py                CLI, walks one concept's history chronologically
 │   └── validate.py                structural integrity checks on the graph
 └── output/
     └── last_report.json           written each time reason.py runs
@@ -171,6 +172,24 @@ The report printed to the terminal includes:
 - A one paragraph recommendation naming the strongest precedent and which section of it to read first
 
 The same report is also written as structured JSON to `output/last_report.json` after every run.
+
+### Concept timeline, a second way of reasoning over the same graph
+
+`reason.py` answers "what precedent exists for a new idea." A related but different question shows up directly in the assignment brief: a developer who encounters a behavior that seems arbitrary and wants to understand the original debate behind it. `timeline.py` answers that one.
+
+List every concept the knowledge base knows about:
+
+```bash
+python3 timeline.py --list
+```
+
+Walk the chronological history of one concept, including the supersession chain and the actual debated points at each stage:
+
+```bash
+python3 timeline.py type_narrowing
+```
+
+This traces PEP-544 through PEP-586 through PEP-647 through PEP-742, showing the point where `TypeGuard` was replaced by `TypeIs` and the real objection text that drove that change, straight from the PEP source, not generated. The same graph, walked a second way.
 
 ## 7. Configuration
 

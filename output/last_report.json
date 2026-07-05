@@ -1,5 +1,5 @@
 {
-  "input": "Should Python allow marking a TypedDict field as read-only so a type checker can prevent mutation?",
+  "input": "Should Python allow marking a TypedDict field as read-only?",
   "matched_concepts": [
     "typed_dict"
   ],
@@ -15,20 +15,20 @@
       ]
     },
     {
-      "pep": "PEP-655",
-      "title": "Marking individual TypedDict items as required or potentially-missing",
+      "pep": "PEP-742",
+      "title": "Narrowing types with TypeIs",
       "status": "Final",
-      "python_version": "3.11",
+      "python_version": "3.13",
       "concept_overlap_score": 1,
       "shared_concepts": [
         "typed_dict"
       ]
     },
     {
-      "pep": "PEP-742",
-      "title": "Narrowing types with TypeIs",
+      "pep": "PEP-655",
+      "title": "Marking individual TypedDict items as required or potentially-missing",
       "status": "Final",
-      "python_version": "3.13",
+      "python_version": "3.11",
       "concept_overlap_score": 1,
       "shared_concepts": [
         "typed_dict"

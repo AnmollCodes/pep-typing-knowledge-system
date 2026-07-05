@@ -127,6 +127,16 @@ This satisfies "operating on new inputs": the report for an idea never
 literally appeared in the 29 ingested PEPs, but every fact in the report
 traces to something that did.
 
+## A second reasoning interface: concept timelines
+
+The assignment names two distinct developer scenarios, not one: proposing something new and checking for precedent, and encountering an existing behavior and wanting to understand the debate that produced it. `reason.py` only answers the first. I added `timeline.py` to answer the second honestly, using the same graph, no new extraction.
+
+Given a concept id, it walks `DISCUSSES_CONCEPT` to find every PEP that touched it, sorts by the PEP's `Created` date (parsed from the header field, not inferred), and walks `SUPERSEDES` / `SUPERSEDED_BY` alongside each entry so a supersession chain is visible directly in the output. It also surfaces the actual extracted Argument text tied to that concept at each point in the chain.
+
+Run against `type_narrowing`, it traces PEP-544 through PEP-586 through PEP-647 through PEP-742, and the PEP-742 entry shows the real objection that drove `TypeGuard` being reworked into `TypeIs`, quoted from the PEP source. That is close to the exact "why does Python work this way" scenario the assignment describes, and it costs no new schema, since it is a second traversal path over entities and relationships that already existed.
+
+I considered folding this into `reason.py` as a mode flag instead of a separate file. I kept it separate because the two tools answer genuinely different questions with different output shapes (a ranked precedent report versus a chronological trace), and conflating them behind one flag would have made both harder to explain and to test independently.
+
 ## What I'd build next
 
 - **Cross-concept argument chains.** Right now arguments are tied to a
