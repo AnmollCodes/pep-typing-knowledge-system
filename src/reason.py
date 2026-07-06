@@ -83,13 +83,29 @@ def reason_over_new_input(new_text, state, top_k=5):
     for e in edges["ARGUMENT_ABOUT"]:
         concept_to_args[e["to"]].append(e["from"])
 
-    # Rank related PEPs by number of matched concepts they discuss (precedent strength)
+    # Rank related PEPs by number of matched concepts they discuss (precedent strength).
+    # Tie-break by how many extracted arguments that PEP has about the matched
+    # concepts specifically. A PEP that only mentions a concept in passing
+    # (one DISCUSSES_CONCEPT edge, zero arguments about it) should not
+    # outrank the PEP that actually built and defended the concept. Counter
+    # alone ties on raw concept-overlap count and breaks ties by insertion
+    # order, which surfaced exactly this problem: a TypedDict question
+    # ranked PEP-593 (which mentions TypedDict once, in passing) above
+    # PEP-589 (the PEP that defines TypedDict and argues about it at length).
     pep_scores = Counter()
+    pep_arg_density = Counter()
     for c in matched_concepts:
         for pep_id in concept_to_peps.get(c, []):
             pep_scores[pep_id] += 1
+        for arg_id in concept_to_args.get(c, []):
+            pep_arg_density[arguments[arg_id]["pep"]] += 1
 
-    ranked_peps = pep_scores.most_common(top_k)
+    ranked_pep_ids = sorted(
+        pep_scores.keys(),
+        key=lambda p: (pep_scores[p], pep_arg_density.get(p, 0)),
+        reverse=True,
+    )
+    ranked_peps = [(p, pep_scores[p]) for p in ranked_pep_ids[:top_k]]
 
     related_arguments = []
     seen_arg_ids = set()

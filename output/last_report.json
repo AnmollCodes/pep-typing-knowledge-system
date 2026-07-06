@@ -1,37 +1,19 @@
 {
-  "input": "Should Python allow marking a TypedDict field as read-only?",
+  "input": "I want a function's return type to narrow based on an isinstance check, interacting with Protocol classes",
   "matched_concepts": [
-    "typed_dict"
+    "protocols_structural_typing",
+    "type_narrowing"
   ],
   "precedent_peps": [
     {
-      "pep": "PEP-589",
-      "title": "TypedDict: Type Hints for Dictionaries with a Fixed Set of Keys",
+      "pep": "PEP-544",
+      "title": "Protocols: Structural subtyping (static duck typing)",
       "status": "Final",
       "python_version": "3.8",
-      "concept_overlap_score": 1,
+      "concept_overlap_score": 2,
       "shared_concepts": [
-        "typed_dict"
-      ]
-    },
-    {
-      "pep": "PEP-742",
-      "title": "Narrowing types with TypeIs",
-      "status": "Final",
-      "python_version": "3.13",
-      "concept_overlap_score": 1,
-      "shared_concepts": [
-        "typed_dict"
-      ]
-    },
-    {
-      "pep": "PEP-655",
-      "title": "Marking individual TypedDict items as required or potentially-missing",
-      "status": "Final",
-      "python_version": "3.11",
-      "concept_overlap_score": 1,
-      "shared_concepts": [
-        "typed_dict"
+        "protocols_structural_typing",
+        "type_narrowing"
       ]
     },
     {
@@ -39,9 +21,21 @@
       "title": "User-Defined Type Guards",
       "status": "Final",
       "python_version": "3.10",
-      "concept_overlap_score": 1,
+      "concept_overlap_score": 2,
       "shared_concepts": [
-        "typed_dict"
+        "protocols_structural_typing",
+        "type_narrowing"
+      ]
+    },
+    {
+      "pep": "PEP-742",
+      "title": "Narrowing types with TypeIs",
+      "status": "Final",
+      "python_version": "3.13",
+      "concept_overlap_score": 2,
+      "shared_concepts": [
+        "protocols_structural_typing",
+        "type_narrowing"
       ]
     },
     {
@@ -51,59 +45,69 @@
       "python_version": "3.13",
       "concept_overlap_score": 1,
       "shared_concepts": [
-        "typed_dict"
+        "protocols_structural_typing"
+      ]
+    },
+    {
+      "pep": "PEP-589",
+      "title": "TypedDict: Type Hints for Dictionaries with a Fixed Set of Keys",
+      "status": "Final",
+      "python_version": "3.8",
+      "concept_overlap_score": 1,
+      "shared_concepts": [
+        "protocols_structural_typing"
       ]
     }
   ],
   "arguments_you_will_likely_face": [
     {
-      "concept": "typed_dict",
-      "from_pep": "PEP-589",
-      "section": "Backwards Compatibility",
-      "point": "To retain backwards compatibility, type checkers should not infer a TypedDict type unless it is sufficiently clear that this is desired by the programmer. When unsure, an ordinary dictionary type should be inferred. Otherwise existing code that type checks without errors may start generating errors once TypedDict support is added to the type checker, since TypedDict types are more restrictive than dictionary types. In particular, they aren't subtypes of dictionary types."
+      "concept": "protocols_structural_typing",
+      "from_pep": "PEP-544",
+      "section": "Rationale and Goals",
+      "point": "Currently, :pep:`484` and the ``typing`` module [typing]_ define abstract base classes for several common Python protocols such as ``Iterable`` and ``Sized``. The problem with them is that a class has to be explicitly marked to support them, which is unpythonic and unlike what one would normally do in idiomatic dynamically typed Python code. For example, this conforms to :pep:`484`::"
     },
     {
-      "concept": "typed_dict",
-      "from_pep": "PEP-589",
-      "section": "Rejected Alternatives",
-      "point": "TypedDict isn't extensible, and it addresses only a specific use case. TypedDict objects are regular dictionaries at runtime, and TypedDict cannot be used with other dictionary-like or mapping-like classes, including subclasses of ``dict``. There is no way to add methods to TypedDict types. The motivation here is simplicity."
+      "concept": "protocols_structural_typing",
+      "from_pep": "PEP-544",
+      "section": "Rationale and Goals",
+      "point": "Structural subtyping is natural for Python programmers since it matches the runtime semantics of duck typing: an object that has certain properties is treated independently of its actual runtime class. However, as discussed in :pep:`483`, both nominal and structural subtyping have their strengths and weaknesses. Therefore, in this PEP we *do not propose* to replace the nominal subtyping described by :pep:`484` with structural subtyping completely. Instead, protocol classes as specified in this PEP complement normal classes, and users are free to choose where to apply a particular solution. See"
     },
     {
-      "concept": "typed_dict",
-      "from_pep": "PEP-589",
-      "section": "Rejected Alternatives",
-      "point": "TypedDict type definitions could plausibly used to perform runtime type checking of dictionaries. For example, they could be used to validate that a JSON object conforms to the schema specified by a TypedDict type. This PEP doesn't include such functionality, since the focus of this proposal is static type checking only, and other existing types do not support this, as discussed in `Class-based syntax`_. Such functionality can be provided by a third-party library using the ``typing_inspect`` [#typing_inspect]_ third-party module, for example."
+      "concept": "protocols_structural_typing",
+      "from_pep": "PEP-544",
+      "section": "Rationale and Goals",
+      "point": "At runtime, protocol classes will be simple ABCs. There is no intent to provide sophisticated runtime instance and class checks against protocol classes. This would be difficult and error-prone and will contradict the logic of :pep:`484`. As well, following :pep:`484` and :pep:`526` we state that protocols are **completely optional**:"
     },
     {
-      "concept": "typed_dict",
-      "from_pep": "PEP-589",
-      "section": "Rejected Alternatives",
-      "point": "TypedDict types can't be used in ``isinstance()`` or ``issubclass()`` checks. The reasoning is similar to why runtime type checks aren't supported in general with many type hints."
+      "concept": "protocols_structural_typing",
+      "from_pep": "PEP-544",
+      "section": "Rejected/Postponed Ideas",
+      "point": "Some languages such as Go make structural subtyping the only or the primary form of subtyping. We could achieve a similar result by making all classes protocols by default (or even always). However we believe that it is better to require classes to be explicitly marked as protocols, for the following reasons:"
     },
     {
-      "concept": "typed_dict",
-      "from_pep": "PEP-589",
-      "section": "Rejected Alternatives",
-      "point": "TypedDict doesn't support providing a *default value type* for keys that are not explicitly defined. This would allow arbitrary keys to be used with a TypedDict object, and only explicitly enumerated keys would receive special treatment compared to a normal, uniform dictionary type."
+      "concept": "protocols_structural_typing",
+      "from_pep": "PEP-544",
+      "section": "Rejected/Postponed Ideas",
+      "point": "Protocols don't have some properties of regular classes. In particular, ``isinstance()``, as defined for normal classes, is based on the nominal hierarchy. In order to make everything a protocol by default, and have ``isinstance()`` work would require changing its semantics, which won't happen. * Protocol classes should generally not have many method implementations, as they describe an interface, not an implementation. Most classes have many method implementations, making them bad protocol classes. * Experience suggests that many classes are not practical as protocols anyway, mainly because t"
     },
     {
-      "concept": "typed_dict",
-      "from_pep": "PEP-589",
-      "section": "Rejected Alternatives",
-      "point": "TypedDict can't be used for specifying the type of a ``**kwargs`` argument. This would allow restricting the allowed keyword arguments and their types. According to :pep:`484`, using a TypedDict type as the type of ``**kwargs`` means that the TypedDict is valid as the *value* of arbitrary keyword arguments, but it doesn't restrict which keyword arguments should be allowed. The syntax ``**kwargs: Expand[T]`` has been proposed for this [#expand]_."
+      "concept": "protocols_structural_typing",
+      "from_pep": "PEP-544",
+      "section": "Rejected/Postponed Ideas",
+      "point": "class Proto(Base, Protocol): def meth(self) -> int: ..."
     },
     {
-      "concept": "typed_dict",
-      "from_pep": "PEP-655",
-      "section": "Rejected Ideas",
-      "point": "class MyThing(TypedDict): opt1?: str # may not exist, but if exists, value is string opt2: Optional[str] # always exists, but may have None value"
+      "concept": "protocols_structural_typing",
+      "from_pep": "PEP-544",
+      "section": "Rejected/Postponed Ideas",
+      "point": "Now, ``C`` is a subtype of ``Proto``, and ``Proto`` is a subtype of ``Base``. But ``C`` cannot be a subtype of ``Base`` (since the latter is not a protocol). This situation would be really weird. In addition, there is an ambiguity about whether attributes of ``Base`` should become protocol members of ``Proto``."
     },
     {
-      "concept": "typed_dict",
-      "from_pep": "PEP-655",
-      "section": "Rejected Ideas",
-      "point": "This notation would require Python grammar changes and it is not believed that marking TypedDict items as required or potentially-missing would meet the high bar required to make such grammar changes."
+      "concept": "protocols_structural_typing",
+      "from_pep": "PEP-544",
+      "section": "Rejected/Postponed Ideas",
+      "point": "We can come up with examples where it would be handy to be able to say that a method or data attribute does not need to be present in a class implementing a protocol, but if it is present, it must conform to a specific signature or type. One could use a ``hasattr()`` check to determine whether they can use the attribute on a particular instance."
     }
   ],
-  "recommendation": "Very strong precedent overlap with PEP-589 ('TypedDict: Type Hints for Dictionaries with a Fixed Set of Keys', status: Final). Read that PEP's Rationale/Rejected-Ideas section before drafting a proposal, since 1 of 1 matched concept(s) were already litigated there."
+  "recommendation": "Very strong precedent overlap with PEP-544 ('Protocols: Structural subtyping (static duck typing)', status: Final). Read that PEP's Rationale/Rejected-Ideas section before drafting a proposal, since 2 of 2 matched concept(s) were already litigated there."
 }

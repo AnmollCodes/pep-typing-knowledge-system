@@ -127,6 +127,22 @@ This satisfies "operating on new inputs": the report for an idea never
 literally appeared in the 29 ingested PEPs, but every fact in the report
 traces to something that did.
 
+One ranking bug surfaced during testing and is worth recording honestly: the
+initial version ranked precedent PEPs purely by raw concept-overlap count,
+and ties were broken by Python `Counter.most_common`'s insertion order, which
+is arbitrary with respect to relevance. Querying "should a TypedDict field be
+markable read-only" surfaced PEP-593 (which mentions TypedDict once, in
+passing, while discussing `Annotated[]`) ranked above PEP-589, the PEP that
+actually defines TypedDict and argues about it at length. The fix adds a
+secondary sort key: the number of extracted arguments a PEP has specifically
+about the matched concept, so a PEP that only mentions a concept in passing
+can no longer outrank the PEP that actually built and defended it. After the
+fix, the same query correctly surfaces PEP-655 (marking individual TypedDict
+items, 10 extracted arguments about the concept) ahead of PEP-589 (6
+arguments), which is also a more topically precise match, since "marking a
+field read-only" is closer to "marking individual items" than to the base
+TypedDict proposal.
+
 ## A second reasoning interface: concept timelines
 
 The assignment names two distinct developer scenarios, not one: proposing something new and checking for precedent, and encountering an existing behavior and wanting to understand the debate that produced it. `reason.py` only answers the first. I added `timeline.py` to answer the second honestly, using the same graph, no new extraction.
